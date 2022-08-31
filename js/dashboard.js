@@ -256,7 +256,7 @@
       ctx.height = 88;
       var barChart = new Chart(barChartCanvas, {
         type: 'bar',
-        height: '200',
+        height: '50',
         data: webAudienceMetricsSatackedData,
         options: webAudienceMetricsSatackedOptions
       });
