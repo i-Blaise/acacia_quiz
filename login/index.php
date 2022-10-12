@@ -1,17 +1,15 @@
 <?php
-require_once('../ClassLibraries/MainClass.php');
-$mainPlug = new mainClass();
+require_once('../ClassLibraries/AdminClass.php');
+$adminPlug = new adminClass();
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Dosh CMS Login</title>
+	<title>Acacia Quiz Admin</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="images/icons/dosh-favicon.png"/>
+	<link rel="icon" type="image/png" href="../images/acacialogo_mini.png">
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
 <!--===============================================================================================-->
@@ -34,7 +32,9 @@ $mainPlug = new mainClass();
 <!--===============================================================================================-->
 
 
-	<!-- Notification -->
+
+
+      <!-- Notification -->
 	<!-- jQuery -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<!-- Toastr -->
@@ -42,54 +42,39 @@ $mainPlug = new mainClass();
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
     <?php
-    if(isset($_GET['status']) && $_GET['status'] == "saved")
+    if(isset($_GET['status']) && $_GET['status'] == "expired")
     { 
-        echo "     <script type='text/javascript'>   
+        echo "<script type='text/javascript'>   
         $(document).ready(function() {
         toastr.options.positionClass = 'toast-top-right';
         toastr.options.closeButton = true;
-        toastr.options.closeDuration = 300;
-        toastr.success('Your Covid Test has been booked!', 'Success');
-    });
-    </script>";
-    }elseif(isset($_GET['status']) && $_GET['status'] == "expired")
-    {
-        echo "     <script type='text/javascript'>   
-        $(document).ready(function() {
-        toastr.options.positionClass = 'toast-top-right';
-        toastr.options.closeButton = true;
-        toastr.options.closeDuration = 300;
+        toastr.options.extendedTimeOut = 0;
+        toastr.options.timeOut = 50000;
         toastr.info('Please enter your credentials to log in', 'Session Expired');
     });
     </script>";
     }
        ?>
 </head>
-
 <?php
-if(isset($_POST['submit']))
+if(isset($_POST['submit']) && $_POST['submit'] == "Submit")
 {
+    $username = $_POST['username'];
+    $password = $_POST['admin_pass'];
 
-    $login_result = $mainPlug->loginPage($_POST);
-
-	print_r($login_result);
-	die();
-    if(isset($login_result['name']))
+	$adminCheck = $adminPlug->checkAdminCred($username, $password);
+    if($adminCheck == 'good')
     {
-		$_SESSION['company'] = $login_result['company'];
-		$_SESSION['position'] = $login_result['position'];
-        $_SESSION['name'] = $login_result['name'];
+        $_SESSION['log'] = true;
         $_SESSION['start'] = time(); // Taking now logged in time.
             // Ending a session in 30 minutes from the starting time.
-        $_SESSION['expire'] = $_SESSION['start'] + (30 * 60);
-		if($login_result['company'] == 'Gino')
-		{
-		echo "<script>location='../dashboard'</script>";
+		$_SESSION['expire'] = $_SESSION['start'] + (30 * 60);
+		// echo "<script>location='http://localhost/acacia_be/'</script>";
+		echo "<script>location='https://ahighana.com/quiz/Admin/'</script>";
         die();
-		}
     }else
     {
-        echo " <script type='text/javascript'>   
+        echo "<script type='text/javascript'>   
         $(document).ready(function() {
         toastr.options.positionClass = 'toast-top-right';
         toastr.options.closeButton = true;
@@ -104,51 +89,45 @@ if(isset($_POST['submit']))
 	
 	<div class="limiter">
 		<div class="container-login100">
-			<div class="wrap-login100">
-				<div class="login100-form-title" style="background-image: url(images/banner-01--old.JPG); 
-				object-fit: cover !important; ">
-					<!-- <span class="login100-form-title-1">
-						Sign In
-					</span> -->
-				</div>
-
+			<div class="wrap-login100 p-b-160 p-t-50">
+			<div class="logo">
+            <a class="nav-logo" href=""><img src="../../Home/images/acacia.png" alt="" width="170"></a>
+          </div>
 				<form class="login100-form validate-form" method="POST">
-					<div class="wrap-input100 validate-input m-b-26" data-validate="email is required">
-						<span class="label-input100">Email</span>
-						<input class="input100" type="text" name="email" placeholder="Enter email">
-						<span class="focus-input100"></span>
+					<span class="login100-form-title p-b-43">
+						Quiz Dashboard Login
+					</span>
+					
+					<div class="wrap-input100 rs1 validate-input" data-validate = "Username is required">
+						<input class="input100" type="text" name="username">
+						<span class="label-input100">Username</span>
 					</div>
-
-					<div class="wrap-input100 validate-input m-b-18" data-validate = "Password is required">
+					
+					
+					<div class="wrap-input100 rs2 validate-input" data-validate="Password is required">
+						<input class="input100" type="password" name="admin_pass">
 						<span class="label-input100">Password</span>
-						<input class="input100" type="password" name="pass" placeholder="Enter password">
-						<span class="focus-input100"></span>
 					</div>
-
-					<!-- <div class="flex-sb-m w-full p-b-30">
-						<div class="contact100-form-checkbox">
-							<input class="input-checkbox100" id="ckb1" type="checkbox" name="remember-me">
-							<label class="label-checkbox100" for="ckb1">
-								Remember me
-							</label>
-						</div>
-
-						<div>
-							<a href="#" class="txt1">
-								Forgot Password?
-							</a>
-						</div>
-					</div> -->
 
 					<div class="container-login100-form-btn">
-						<button class="login100-form-btn" name="submit" value="Submit">
-							Login
+						<button class="login100-form-btn" type="submit" name="submit" value="Submit">
+							Sign in
 						</button>
 					</div>
+					
+					<!-- <div class="text-center w-full p-t-23">
+						<a href="#" class="txt1">
+							Forgot password?
+						</a>
+					</div> -->
 				</form>
 			</div>
 		</div>
 	</div>
+	
+	
+
+	
 	
 <!--===============================================================================================-->
 	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
