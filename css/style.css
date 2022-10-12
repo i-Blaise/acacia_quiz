@@ -10935,6 +10935,26 @@ textarea.is-invalid.tt-hint {
   }
 }
 
+.view-all-btn {
+  margin-left: 50%;
+  padding: 15px 31px !important;
+  background-color: #F28D1E !important;
+  border: 1px solid #DEE5EF !important;
+}
+
+.view-all-btn:hover {
+  background-color: #eb800e !important;
+}
+
+.score-dropdown {
+  border: #F28D1E 1px solid !important;
+}
+
+.score-dropdown:hover {
+  border: #F28D1E 1px solid !important;
+  background-color: #F28D1E !important;
+}
+
 .btn, .ajax-upload-dragdrop .ajax-file-upload {
   display: inline-block;
   font-weight: 400;
@@ -22005,8 +22025,8 @@ dl li {
 }
 
 .sidebar .user-profile .user-image img {
-  width: 79px;
-  height: 79px;
+  width: 84px;
+  height: 102px;
   border-radius: 100%;
   margin-bottom: .625rem;
 }

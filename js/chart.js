@@ -4,23 +4,29 @@ $(function() {
    * Data and config for chartjs
    */
   'use strict';
+
+  var lessThan30 = document.getElementById("lessThan30").innerHTML;
+  var from30To50 = document.getElementById("30To50").innerHTML;
+  var from50To70 = document.getElementById("50To70").innerHTML;
+  var GreaterThan70 = document.getElementById("GreaterThan70").innerHTML;
+  // var female = document.getElementById("female").innerHTML;
   var data = {
-    labels: ["2013", "2014", "2014", "2015", "2016", "2017"],
+    labels: ["< 30%", "30% - 50%", "51% - 70%", "> 70%"],
     datasets: [{
-      label: '# of Votes',
-      data: [10, 19, 3, 5, 2, 3],
+      label: 'Number of quizz taken',
+      data: [lessThan30, from30To50, from50To70, GreaterThan70],
       backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
+        'rgba(104, 49, 145, 0.2)',
+        'rgba(242, 141, 30, 0.2)',
+        'rgba(114, 191, 165, 0.2)',
         'rgba(75, 192, 192, 0.2)',
         'rgba(153, 102, 255, 0.2)',
         'rgba(255, 159, 64, 0.2)'
       ],
       borderColor: [
-        'rgba(255,99,132,1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
+        'rgba(104,49,145,1)',
+        'rgba(242, 141, 30, 1)',
+        'rgba(114, 191, 165, 1)',
         'rgba(75, 192, 192, 1)',
         'rgba(153, 102, 255, 1)',
         'rgba(255, 159, 64, 1)'
@@ -78,9 +84,14 @@ $(function() {
     }
 
   };
+  // var male = document.getElementById("male").innerHTML;
+  // var female = document.getElementById("female").innerHTML;
+
+  var male = 10;
+  var female = 90;
   var doughnutPieData = {
     datasets: [{
-      data: [30, 40, 30],
+      data: [male, female],
       backgroundColor: [
         'rgba(255, 99, 132, 0.5)',
         'rgba(54, 162, 235, 0.5)',
@@ -101,9 +112,8 @@ $(function() {
 
     // These labels appear in the legend and in the tooltips when hovering different arcs
     labels: [
-      'Pink',
-      'Blue',
-      'Yellow',
+      'Male',
+      'Female',
     ]
   };
   var doughnutPieOptions = {
@@ -113,11 +123,14 @@ $(function() {
       animateRotate: true
     }
   };
+
+  var first = document.getElementById("lessThan30").innerHTML;
+  var second = document.getElementById("30To50").innerHTML;
   var areaData = {
-    labels: ["2013", "2014", "2015", "2016", "2017"],
+    labels: ["Jul", "Jun", "May", "Apr", "Mar", "Feb"],
     datasets: [{
-      label: '# of Votes',
-      data: [12, 19, 3, 5, 2, 3],
+      label: '# of Quizz taken',
+      data: [first, second, 3, 5, 2, 8],
       backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
         'rgba(54, 162, 235, 0.2)',
