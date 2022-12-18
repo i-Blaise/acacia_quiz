@@ -1,6 +1,12 @@
 <?php
 require_once('../ClassLibraries/MainClass.php');
 $mainPlug = new mainClass();
+
+
+if(!isset($_SESSION['login']) || empty($_SESSION['login']))
+    {
+            header("Location: ../login");
+    }
 ?>
 
 
@@ -205,7 +211,7 @@ $mainPlug = new mainClass();
               <a class="dropdown-item preview-item">               
                   <i class="icon-head"></i> Profile
               </a> -->
-              <a class="dropdown-item preview-item" href="#">
+              <a class="dropdown-item preview-item" href="../login/logout.php">
                   <i class="icon-circle-cross"></i> Logout
               </a>
             </div>
@@ -248,7 +254,8 @@ $mainPlug = new mainClass();
             <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"> <a class="nav-link" href="../pages/homepage.php">Homepage</a></li>
-                <li class="nav-item"> <a class="nav-link" href="../pages/about.php" aria-disabled="true"dd   q>About Page</a></li>
+                <li class="nav-item"> <a class="nav-link" href="../pages/about.php" aria-disabled="true">About Page</a></li>
+                <li class="nav-item"> <a class="nav-link" href="../pages/product_services.php">Products & Services</a></li>
                 <li class="nav-item"> <a class="nav-link" href="../pages/contact.php">Contact Page</a></li>
               </ul>
             </div>
@@ -302,7 +309,9 @@ $mainPlug = new mainClass();
                       <label for="formFile" class="form-label">About Us Header Image</label>
                       <input class="form-control" type="file" id="formFile" name="about_header_image">
                       </div>
-                      <p style="color:red">Slide should be above 800 x 500 dimension</p>
+                      <p style="color:red">Image should be above 800 x 500 and below 1920 x 1080</p>
+                      <p style="color:red">Image size must be less than 1MB</p>
+                      <p style="color:red">Image extesion can be SVG, PNG, JPG or JPEG</p>
                     </div>
                     <button type="submit" class="btn btn-primary mr-2" name="about_img_submit">Submit</button>
                     <button class="btn btn-light">Cancel</button>
@@ -326,11 +335,13 @@ $mainPlug = new mainClass();
                   <form class="forms-sample" method="POST" action="">
                     <div class="form-group">
                       <label for="exampleInputEmail1">Title 1</label>
-                      <input type="text" class="form-control" id="exampleInputEmail1" name="about1_heading" value="<?php echo $aboutus_data['about1_heading']; ?>">
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="about1_heading" value="<?php echo $aboutus_data['about1_heading']; ?>" maxlength="25">
+                      <p style="color:red">Max number of characters: 25</p>
                     </div>
                     <div class="form-group">
                       <label for="exampleTextarea1">Description 1</label>
-                      <textarea class="form-control" id="exampleTextarea1" rows="4" name="about1_desc"><?php echo $aboutus_data['about1_desc']; ?></textarea>
+                      <textarea class="form-control" id="exampleTextarea1" rows="4" name="about1_desc" maxlength="800"><?php echo $aboutus_data['about1_desc']; ?></textarea>
+                      <p style="color:red">Max number of characters: 800</p>
                     </div>
                     <button type="submit" class="btn btn-primary mr-2" name="about1_submit">Submit</button>
                     <button class="btn btn-light">Cancel</button>
@@ -352,11 +363,13 @@ $mainPlug = new mainClass();
                   <form class="forms-sample" method="POST" action="">
                     <div class="form-group">
                       <label for="exampleInputEmail1">Title 2</label>
-                      <input type="text" class="form-control" id="exampleInputEmail1" name="about2_heading" value="<?php echo $aboutus_data['about2_heading']; ?>">
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="about2_heading" value="<?php echo $aboutus_data['about2_heading']; ?>" maxlength="25">
+                      <p style="color:red">Max number of characters: 25</p>
                     </div>
                     <div class="form-group">
                       <label for="exampleTextarea1">Description 2</label>
-                      <textarea class="form-control" id="exampleTextarea1" rows="4" name="about2_desc"><?php echo $aboutus_data['about2_desc']; ?></textarea>
+                      <textarea class="form-control" id="exampleTextarea1" rows="4" name="about2_desc" maxlength="255"><?php echo $aboutus_data['about2_desc']; ?></textarea>
+                      <p style="color:red">Max number of characters: 255</p>
                     </div>
                     <button type="submit" class="btn btn-primary mr-2" name="about2_submit">Submit</button>
                     <button class="btn btn-light">Cancel</button>
@@ -376,11 +389,13 @@ $mainPlug = new mainClass();
                   <form class="forms-sample" method="POST" action="">
                     <div class="form-group">
                       <label for="exampleInputEmail1">Title 3</label>
-                      <input type="text" class="form-control" id="exampleInputEmail1" name="about3_heading" value="<?php echo $aboutus_data['about3_heading']; ?>">
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="about3_heading" value="<?php echo $aboutus_data['about3_heading']; ?>" maxlength="25">
+                      <p style="color:red">Max number of characters: 25</p>
                     </div>
                     <div class="form-group">
                       <label for="exampleTextarea1">Description 3</label>
-                      <textarea class="form-control" id="exampleTextarea1" rows="4" name="about3_desc"><?php echo $aboutus_data['about3_desc']; ?></textarea>
+                      <textarea class="form-control" id="exampleTextarea1" rows="4" name="about3_desc" maxlength="255"><?php echo $aboutus_data['about3_desc']; ?></textarea>
+                      <p style="color:red">Max number of characters: 255</p>
                     </div>
                     <button type="submit" class="btn btn-primary mr-2" name="about3_submit">Submit</button>
                     <button class="btn btn-light">Cancel</button>

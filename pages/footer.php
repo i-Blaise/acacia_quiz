@@ -1,6 +1,12 @@
 <?php
 require_once('../ClassLibraries/MainClass.php');
 $mainPlug = new mainClass();
+
+
+if(!isset($_SESSION['login']) || empty($_SESSION['login']))
+    {
+            header("Location: ../login");
+    }
 ?>
 
 
@@ -110,7 +116,7 @@ $mainPlug = new mainClass();
               <a class="dropdown-item preview-item">               
                   <i class="icon-head"></i> Profile
               </a> -->
-              <a class="dropdown-item preview-item" href="#">
+              <a class="dropdown-item preview-item" href="../login/logout.php">
                   <i class="icon-circle-cross"></i> Logout
               </a>
             </div>
@@ -154,6 +160,7 @@ $mainPlug = new mainClass();
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"> <a class="nav-link" href="../pages/homepage.php">Homepage</a></li>
                 <li class="nav-item"> <a class="nav-link" href="../pages/about.html">About Page</a></li>
+                <li class="nav-item"> <a class="nav-link" href="../pages/product_services.php">Products & Services</a></li>
                 <li class="nav-item"> <a class="nav-link" href="../pages/contact.html">Contact Page</a></li>
               </ul>
             </div>
@@ -197,38 +204,42 @@ $mainPlug = new mainClass();
                     <form class="forms-sample" method="POST" action="">
                       <div class="form-group">
                         <label for="exampleInputEmail1">Title 1</label>
-                        <input type="text" name="link_title1" class="form-control" id="exampleInputEmail1" value="<?php echo $footer['link_title1'] ?>" required>
+                        <input type="text" name="link_title1" class="form-control" id="exampleInputEmail1" value="<?php echo $footer['link_title1'] ?>" required maxlength="30">
+                      <p style="color:red">Max number of characters: 30</p>
                       </div>
                       <div class="form-group">
                         <label for="exampleInputEmail1">Link 1</label>
-                        <input type="text" name="link_url1"class="form-control" id="exampleInputEmail1" value="<?php echo $footer['link_url1'] ?>" required>
+                        <input type="text" name="link_url1"class="form-control" id="exampleInputEmail1" value="<?php echo $footer['link_url1'] ?>" required maxlength="255">
                       </div>
                       
                       <div class="form-group">
                         <label for="exampleInputEmail1">Title 2</label>
-                        <input type="text" name="link_title2" class="form-control" id="exampleInputEmail1" value="<?php echo $footer['link_title2'] ?>" required>
+                        <input type="text" name="link_title2" class="form-control" id="exampleInputEmail1" value="<?php echo $footer['link_title2'] ?>" required maxlength="30">
+                      <p style="color:red">Max number of characters: 30</p>
                       </div>
                       <div class="form-group">
                         <label for="exampleInputEmail1">Link 1</label>
-                        <input type="text" name="link_url2" class="form-control" id="exampleInputEmail1" value="<?php echo $footer['link_url2'] ?>" required>
+                        <input type="text" name="link_url2" class="form-control" id="exampleInputEmail1" value="<?php echo $footer['link_url2'] ?>" required maxlength="255">
                       </div>
                       
                       <div class="form-group">
                         <label for="exampleInputEmail1">Title 3</label>
-                        <input type="text" name="link_title3" class="form-control" id="exampleInputEmail1" value="<?php echo $footer['link_title3'] ?>">
+                        <input type="text" name="link_title3" class="form-control" id="exampleInputEmail1" value="<?php echo $footer['link_title3'] ?>" maxlength="30">
+                      <p style="color:red">Max number of characters: 30</p>
                       </div>
                       <div class="form-group">
                         <label for="exampleInputEmail1">Link 3</label>
-                        <input type="text" name="link_url3" class="form-control" id="exampleInputEmail1" value="<?php echo $footer['link_url3'] ?>" required>
+                        <input type="text" name="link_url3" class="form-control" id="exampleInputEmail1" value="<?php echo $footer['link_url3'] ?>" required maxlength="255">
                       </div>
                       
                       <div class="form-group">
                         <label for="exampleInputEmail1">Title 4</label>
-                        <input type="text" name="link_title4" class="form-control" id="exampleInputEmail1" value="<?php echo $footer['link_title4'] ?>">
+                        <input type="text" name="link_title4" class="form-control" id="exampleInputEmail1" value="<?php echo $footer['link_title4'] ?>" maxlength="30">
+                      <p style="color:red">Max number of characters: 30</p>
                       </div>
                       <div class="form-group">
                         <label for="exampleInputEmail1">Link 4</label>
-                        <input type="text" name="link_url4" class="form-control" id="exampleInputEmail1" value="<?php echo $footer['link_url4'] ?>">
+                        <input type="text" name="link_url4" class="form-control" id="exampleInputEmail1" value="<?php echo $footer['link_url4'] ?>" maxlength="255">
                       </div>
                       
                       <button type="submit" name="footer_link_details_submit" class="btn btn-primary mr-2">Submit</button>
@@ -283,19 +294,19 @@ $mainPlug = new mainClass();
                     </div>
                       <div class="form-group">
                         <label for="exampleInputEmail1">Facebook Link</label>
-                        <input type="text" name="sm_facebook_link" class="form-control" id="fb-link" value="<?php echo $footer['sm_facebook_link'] ?>" <?php echo $footer['sm_facebook'] == 0 ? 'disabled' : ''; ?>>
+                        <input type="text" name="sm_facebook_link" class="form-control" id="fb-link" value="<?php echo $footer['sm_facebook_link'] ?>" <?php echo $footer['sm_facebook'] == 0 ? 'disabled' : ''; ?> maxlength="255">
                       </div>
                       <div class="form-group">
                         <label for="exampleInputEmail1">Twitter Link</label>
-                        <input type="text" name="sm_twitter_link" class="form-control" id="tw-link" value="<?php echo $footer['sm_twitter_link'] ?>" <?php echo $footer['sm_twitter'] == 0 ? 'disabled' : ''; ?>>
+                        <input type="text" name="sm_twitter_link" class="form-control" id="tw-link" value="<?php echo $footer['sm_twitter_link'] ?>" <?php echo $footer['sm_twitter'] == 0 ? 'disabled' : ''; ?> maxlength="255">
                       </div>
                       <div class="form-group">
                         <label for="exampleInputEmail1">LinkedIn  Link</label>
-                        <input type="text" name="sm_linkedin_link" class="form-control" id="li-link" value="<?php echo $footer['sm_linkedin_link'] ?>" <?php echo $footer['sm_linkedin'] == 0 ? 'disabled' : ''; ?>>
+                        <input type="text" name="sm_linkedin_link" class="form-control" id="li-link" value="<?php echo $footer['sm_linkedin_link'] ?>" <?php echo $footer['sm_linkedin'] == 0 ? 'disabled' : ''; ?> maxlength="255">
                       </div>
                       <div class="form-group">
                         <label for="exampleInputEmail1">Instagram Link</label>
-                        <input type="text" name="sm_instagram_link" class="form-control" id="in-link" value="<?php echo $footer['sm_instagram_link'] ?>" <?php echo $footer['sm_instagram'] == 0 ? 'disabled' : ''; ?>>
+                        <input type="text" name="sm_instagram_link" class="form-control" id="in-link" value="<?php echo $footer['sm_instagram_link'] ?>" <?php echo $footer['sm_instagram'] == 0 ? 'disabled' : ''; ?> maxlength="255">
                       </div>
                       <button type="submit" name="sm_details_submit" class="btn btn-primary mr-2">Submit</button>
                       <button class="btn btn-light">Cancel</button>

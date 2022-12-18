@@ -103,12 +103,24 @@ class mainClass extends DataBase{
     // HOMEPAGE
 
 
+    // FOR PREVIOUS HOME PAGE DESIGN 
     public function fetchHomepageDetails()
     {
         $myQuery = "SELECT * FROM homepage WHERE id = 1";
         $result = mysqli_query($this->db, $myQuery);
         return $result;
     }
+
+
+
+    // FOR CURRENT HOME PAGE DESIGN 
+    public function fetchHomeDetails()
+    {
+        $myQuery = "SELECT * FROM home WHERE id = 1";
+        $result = mysqli_query($this->db, $myQuery);
+        return $result;
+    }
+
 
 
     function processImage($name, $type, $size, $tmp_name, $error, $image_width, $image_height){
@@ -120,7 +132,7 @@ class mainClass extends DataBase{
         $imageName = str_replace(' ', '', basename($name));
         $target_file = $target_dir . $datetime . $imageName;
         $flieLoc = '../images/uploads/'. $datetime . $imageName;
-        $allowedExts = array("png", "PNG");
+        $allowedExts = array("png", "PNG", "SVG", "svg,", "JPG", "jpg", "JPEG", "jpeg");
         $extension = strtolower(pathinfo($name, PATHINFO_EXTENSION));
         $imageLink = 'http://localhost/dosh-cms/'.$target_file;
         
@@ -134,7 +146,7 @@ class mainClass extends DataBase{
         if(($image_height <= $max_height && $image_height >= $min_height) && ($image_width <= $max_width && $image_width >= $min_width))
         {
         
-        if($size < 1*MB)
+        if($size <= 1*MB)
         
           {
             if(in_array($extension, $allowedExts))
@@ -239,9 +251,9 @@ class mainClass extends DataBase{
 
         //   $slider1_image = empty(basename($_FILES["slide-2"]["name"]) ? NULL
           $slider1_heading = filter_var($data['slider1_heading'], FILTER_SANITIZE_STRING);
-          $slider1_desc = filter_var($data['slider1_desc'], FILTER_SANITIZE_STRING);
+          $slider1_desc = $data['slider1_desc'];
           $slider2_heading = filter_var($data['slider2_heading'], FILTER_SANITIZE_STRING);
-          $slider2_desc = filter_var($data['slider2_desc'], FILTER_SANITIZE_STRING);
+          $slider2_desc = $data['slider2_desc'];
           
           if(isset($slide1_link))
           {
@@ -292,9 +304,133 @@ class mainClass extends DataBase{
 
 
 
+
+
+  function uploadHomePageDetails($data)
+  {
+
+    if(!empty($data['submit']) && $data['submit'] == 'header_upload')
+    {
+        // return 'good';
+      if(is_object($data) || is_array($data)){
+        //   $slider1_heading = filter_var($data['slider1_heading'], FILTER_SANITIZE_STRING);
+
+
+
+        if(!empty(basename($_FILES["slide-1"]["name"])))
+        {
+            $name = $_FILES["slide-1"]["name"];
+            $type = $_FILES["slide-1"]["type"];
+            $size = $_FILES["slide-1"]["size"];
+            $error = $_FILES["slide-1"]["error"];
+            $tmp_name = $_FILES["slide-1"]["tmp_name"];
+            $arr = getimagesize($_FILES["slide-1"]["tmp_name"]);
+
+            $image_width = $arr[0];
+            $image_height = $arr[1];
+            $slide1_link = $this->processImage($name, $type, $size, $tmp_name, $error, $image_width, $image_height);
+            if($slide1_link == 'ext_err')
+            {
+                return $slide1_link;
+            }elseif($slide1_link == 'file_err')
+            {
+                return $slide1_link;
+            }elseif($slide1_link == 'dimension_err')
+            {
+                return $slide1_link;
+            }
+            // return $slide1_link;
+        }
+        
+        if(!empty(basename($_FILES["slide-2"]["name"])))
+        {
+            $name = $_FILES["slide-2"]["name"];
+            $type = $_FILES["slide-2"]["type"];
+            $size = $_FILES["slide-2"]["size"];
+            $tmp_name = $_FILES["slide-2"]["tmp_name"];
+            $error = $_FILES["slide-2"]["error"];
+            $arr = getimagesize($_FILES["slide-2"]["tmp_name"]);
+
+            $image_width = $arr[0];
+            $image_height = $arr[1];
+            $slide2_link = $this->processImage($name, $type, $size, $tmp_name, $error, $image_width, $image_height);
+            if($slide2_link == 'ext_err')
+            {
+                return $slide2_link;
+            }elseif($slide2_link == 'file_err')
+            {
+                return $slide2_link;
+            }elseif($slide2_link == 'dimension_err')
+            {
+                return $slide2_link;
+            }
+            // return $slide2_link;
+        }
+
+
+        //   $slider1_image = empty(basename($_FILES["slide-2"]["name"]) ? NULL
+          $slider1_heading = filter_var($data['slider1_heading'], FILTER_SANITIZE_STRING);
+          $slider1_desc = $data['slider1_desc'];
+          $slider2_heading = filter_var($data['slider2_heading'], FILTER_SANITIZE_STRING);
+          $slider2_desc = $data['slider2_desc'];
+          
+          if(isset($slide1_link))
+          {
+            $myQuery = "UPDATE homepage SET 
+            home_slider1_image = '$slide1_link'
+            WHERE id = 1";
+  
+            
+            $result = mysqli_query($this->db, $myQuery);
+            if(!$result){
+            return "Error: " .mysqli_error($this->db);
+            }
+          }
+
+          if(isset($slide2_link))
+          {
+            $myQuery = "UPDATE homepage SET 
+            home_slider2_image = '$slide2_link'
+            WHERE id = 1";
+  
+            
+            $result = mysqli_query($this->db, $myQuery);
+            if(!$result){
+            return "Error: " .mysqli_error($this->db);
+            }
+          }
+          
+          $myQuery = "UPDATE homepage SET 
+          home_slider1_heading = '$slider1_heading',
+          home_slider1_desc = '$slider1_desc',
+          home_slider2_heading = '$slider2_heading',
+          home_slider2_desc = '$slider2_desc'
+          WHERE id = 1";
+
+          
+          $result = mysqli_query($this->db, $myQuery);
+          if(!$result){
+          return "Error: " .mysqli_error($this->db);
+          }else{
+          return 'good';
+          }
+      }
+
+    }else{
+        return 'not done';
+    }
+
+  }
+
+
+
+
+
+
   function uploadHomepageSection1($data)
   {
       if(is_object($data) || is_array($data)){
+        return $data;
 
         if(!empty(basename($_FILES["home-image1"]["name"])))
         {
@@ -423,12 +559,14 @@ class mainClass extends DataBase{
 
   function uploadHomepageSection3($data)
   {
+    // return $data['home_signup_desc'];
+    // die();
       if(is_object($data) || is_array($data)){
 
         
 
           $home_signup_heading = filter_var($data['home_signup_heading'], FILTER_SANITIZE_STRING);
-          $home_signup_desc = filter_var($data['home_signup_desc'], FILTER_SANITIZE_STRING);
+          $home_signup_desc = $data['home_signup_desc'];
           
           $myQuery = "UPDATE homepage SET 
           home_signup_heading = '$home_signup_heading',
@@ -634,21 +772,369 @@ class mainClass extends DataBase{
 
 
 
+
+    // PRODUCTS AND SERVICES PAGE 
+
+    public function fetchPnSPageDetails()
+    {
+        $myQuery = "SELECT * FROM products_and_services WHERE id = 1";
+        $result = mysqli_query($this->db, $myQuery);
+        return $result;
+    }
+
+
+    function uploadPnSPage($data)
+    {
+        if(is_object($data) || is_array($data))
+        {
+            // return $_FILES["pns_banner"]["size"];
+
+            if(isset($_POST['main_text']))
+            {
+    
+            $main_heading = filter_var($data['main_heading'], FILTER_SANITIZE_STRING);
+            $main_desc = filter_var($data['main_desc'], FILTER_SANITIZE_STRING);
+            
+            $myQuery = "UPDATE products_and_services SET 
+            main_heading = '$main_heading',
+            main_desc = '$main_desc'
+            WHERE id = 1";
+    
+            
+            $result = mysqli_query($this->db, $myQuery);
+            if(!$result){
+            return "Error: " .mysqli_error($this->db);
+            }else{
+            return 'good';
+            }
+
+            }elseif(isset($_FILES["pns_banner"]["size"]))
+            {
+                $name = $_FILES["pns_banner"]["name"];
+                $type = $_FILES["pns_banner"]["type"];
+                $size = $_FILES["pns_banner"]["size"];
+                $error = $_FILES["pns_banner"]["error"];
+                $tmp_name = $_FILES["pns_banner"]["tmp_name"];
+                $arr = getimagesize($_FILES["pns_banner"]["tmp_name"]);
+    
+                $image_width = $arr[0];
+                $image_height = $arr[1];
+                $pns_banner_link = $this->processImage($name, $type, $size, $tmp_name, $error, $image_width, $image_height);
+                if($pns_banner_link == 'ext_err')
+                {
+                    return $pns_banner_link;
+                }elseif($pns_banner_link == 'file_err')
+                {
+                    return $pns_banner_link;
+                }elseif($pns_banner_link == 'dimension_err')
+                {
+                    return $pns_banner_link;
+                }else{
+                    $myQuery = "UPDATE products_and_services SET 
+                    banner_img = '$pns_banner_link'
+                    WHERE id = 1";
+        
+                    
+                    $result = mysqli_query($this->db, $myQuery);
+                    if(!$result){
+                    return "Error: " .mysqli_error($this->db);
+                    }else{
+                        return 'good';
+                    }
+                }
+            }elseif(isset($_POST['pns_submit1']))
+            {
+                $pns_heading1 = filter_var($data['pns_heading1'], FILTER_SANITIZE_STRING);
+                $pns_desc1 = filter_var($data['pns_desc1'], FILTER_SANITIZE_STRING);
+
+                if(!empty(basename($_FILES["pns_img1"]["name"])))
+            {
+                $name = $_FILES["pns_img1"]["name"];
+                $type = $_FILES["pns_img1"]["type"];
+                $size = $_FILES["pns_img1"]["size"];
+                $error = $_FILES["pns_img1"]["error"];
+                $tmp_name = $_FILES["pns_img1"]["tmp_name"];
+                $arr = getimagesize($_FILES["pns_img1"]["tmp_name"]);
+    
+                $image_width = $arr[0];
+                $image_height = $arr[1];
+                $pns_img_link = $this->processImage($name, $type, $size, $tmp_name, $error, $image_width, $image_height);
+                if($pns_img_link == 'ext_err')
+                {
+                    return $pns_img_link;
+                }elseif($pns_img_link == 'file_err')
+                {
+                    return $pns_img_link;
+                }elseif($pns_img_link == 'dimension_err')
+                {
+                    return $pns_img_link;
+                }else{
+                    $myQuery = "UPDATE products_and_services SET 
+                    pns_img1 = '$pns_img_link'
+                    WHERE id = 1";
+        
+                    
+                    $result = mysqli_query($this->db, $myQuery);
+                    if(!$result){
+                    return "Error: " .mysqli_error($this->db);
+                    }else{
+                        $query = "UPDATE products_and_services SET 
+                        pns_heading1 = '$pns_heading1',
+                        pns_desc1 = '$pns_desc1'
+                        WHERE id = 1";
+            
+                        
+                        $query_result = mysqli_query($this->db, $query);
+                        if(!$query_result){
+                        return "Error: " .mysqli_error($this->db);
+                        }else{
+                        return 'good';
+                        }
+                    }
+                }
+            }
+
+                
+
+            }elseif(isset($_POST['pns_submit2']))
+            {
+                $pns_heading2 = filter_var($data['pns_heading2'], FILTER_SANITIZE_STRING);
+                $pns_desc2 = filter_var($data['pns_desc2'], FILTER_SANITIZE_STRING);
+
+                if(!empty(basename($_FILES["pns_img2"]["name"])))
+            {
+                $name = $_FILES["pns_img2"]["name"];
+                $type = $_FILES["pns_img2"]["type"];
+                $size = $_FILES["pns_img2"]["size"];
+                $error = $_FILES["pns_img2"]["error"];
+                $tmp_name = $_FILES["pns_img2"]["tmp_name"];
+                $arr = getimagesize($_FILES["pns_img2"]["tmp_name"]);
+    
+                $image_width = $arr[0];
+                $image_height = $arr[1];
+                $pns_img_link = $this->processImage($name, $type, $size, $tmp_name, $error, $image_width, $image_height);
+                if($pns_img_link == 'ext_err')
+                {
+                    return $pns_img_link;
+                }elseif($pns_img_link == 'file_err')
+                {
+                    return $pns_img_link;
+                }elseif($pns_img_link == 'dimension_err')
+                {
+                    return $pns_img_link;
+                }else{
+                    $myQuery = "UPDATE products_and_services SET 
+                    pns_img2 = '$pns_img_link'
+                    WHERE id = 1";
+        
+                    
+                    $result = mysqli_query($this->db, $myQuery);
+                    if(!$result){
+                    return "Error: " .mysqli_error($this->db);
+                    }else{
+                        $query = "UPDATE products_and_services SET 
+                        pns_heading2 = '$pns_heading2',
+                        pns_desc2 = '$pns_desc2'
+                        WHERE id = 1";
+                        
+                        $query_result = mysqli_query($this->db, $query);
+                        if(!$query_result){
+                        return "Error: " .mysqli_error($this->db);
+                        }else{
+                        return 'good';
+                        }
+                    }
+                }
+            }
+
+                
+
+            }elseif(isset($_POST['pns_submit3']))
+            {
+                $pns_heading3 = filter_var($data['pns_heading3'], FILTER_SANITIZE_STRING);
+                $pns_desc3 = filter_var($data['pns_desc3'], FILTER_SANITIZE_STRING);
+
+                if(!empty(basename($_FILES["pns_img3"]["name"])))
+            {
+                $name = $_FILES["pns_img3"]["name"];
+                $type = $_FILES["pns_img3"]["type"];
+                $size = $_FILES["pns_img3"]["size"];
+                $error = $_FILES["pns_img3"]["error"];
+                $tmp_name = $_FILES["pns_img3"]["tmp_name"];
+                $arr = getimagesize($_FILES["pns_img3"]["tmp_name"]);
+    
+                $image_width = $arr[0];
+                $image_height = $arr[1];
+                $pns_img_link = $this->processImage($name, $type, $size, $tmp_name, $error, $image_width, $image_height);
+                if($pns_img_link == 'ext_err')
+                {
+                    return $pns_img_link;
+                }elseif($pns_img_link == 'file_err')
+                {
+                    return $pns_img_link;
+                }elseif($pns_img_link == 'dimension_err')
+                {
+                    return $pns_img_link;
+                }else{
+                    $myQuery = "UPDATE products_and_services SET 
+                    pns_img3 = '$pns_img_link'
+                    WHERE id = 1";
+        
+                    
+                    $result = mysqli_query($this->db, $myQuery);
+                    if(!$result){
+                    return "Error: " .mysqli_error($this->db);
+                    }else{
+                        $query = "UPDATE products_and_services SET 
+                        pns_heading3 = '$pns_heading3',
+                        pns_desc3 = '$pns_desc3'
+                        WHERE id = 1";
+                        
+                        $query_result = mysqli_query($this->db, $query);
+                        if(!$query_result){
+                        return "Error: " .mysqli_error($this->db);
+                        }else{
+                        return 'good';
+                        }
+                    }
+                }
+            }
+
+                
+
+            }elseif(isset($_POST['pns_submit4']))
+            {
+                $pns_heading4 = filter_var($data['pns_heading4'], FILTER_SANITIZE_STRING);
+                $pns_desc4 = filter_var($data['pns_desc4'], FILTER_SANITIZE_STRING);
+
+                if(!empty(basename($_FILES["pns_img4"]["name"])))
+            {
+                $name = $_FILES["pns_img4"]["name"];
+                $type = $_FILES["pns_img4"]["type"];
+                $size = $_FILES["pns_img4"]["size"];
+                $error = $_FILES["pns_img4"]["error"];
+                $tmp_name = $_FILES["pns_img4"]["tmp_name"];
+                $arr = getimagesize($_FILES["pns_img4"]["tmp_name"]);
+    
+                $image_width = $arr[0];
+                $image_height = $arr[1];
+                $pns_img_link = $this->processImage($name, $type, $size, $tmp_name, $error, $image_width, $image_height);
+                if($pns_img_link == 'ext_err')
+                {
+                    return $pns_img_link;
+                }elseif($pns_img_link == 'file_err')
+                {
+                    return $pns_img_link;
+                }elseif($pns_img_link == 'dimension_err')
+                {
+                    return $pns_img_link;
+                }else{
+                    $myQuery = "UPDATE products_and_services SET 
+                    pns_img4 = '$pns_img_link'
+                    WHERE id = 1";
+        
+                    
+                    $result = mysqli_query($this->db, $myQuery);
+                    if(!$result){
+                    return "Error: " .mysqli_error($this->db);
+                    }else{
+                        $query = "UPDATE products_and_services SET 
+                        pns_heading4 = '$pns_heading4',
+                        pns_desc4 = '$pns_desc4'
+                        WHERE id = 1";
+                        
+                        $query_result = mysqli_query($this->db, $query);
+                        if(!$query_result){
+                        return "Error: " .mysqli_error($this->db);
+                        }else{
+                        return 'good';
+                        }
+                    }
+                }
+            }
+
+                
+
+            }elseif(isset($_POST['pns_submit5']))
+            {
+                $pns_heading5 = filter_var($data['pns_heading5'], FILTER_SANITIZE_STRING);
+                $pns_desc5 = filter_var($data['pns_desc5'], FILTER_SANITIZE_STRING);
+
+                if(!empty(basename($_FILES["pns_img5"]["name"])))
+            {
+                $name = $_FILES["pns_img5"]["name"];
+                $type = $_FILES["pns_img5"]["type"];
+                $size = $_FILES["pns_img5"]["size"];
+                $error = $_FILES["pns_img5"]["error"];
+                $tmp_name = $_FILES["pns_img5"]["tmp_name"];
+                $arr = getimagesize($_FILES["pns_img5"]["tmp_name"]);
+    
+                $image_width = $arr[0];
+                $image_height = $arr[1];
+                $pns_img_link = $this->processImage($name, $type, $size, $tmp_name, $error, $image_width, $image_height);
+                if($pns_img_link == 'ext_err')
+                {
+                    return $pns_img_link;
+                }elseif($pns_img_link == 'file_err')
+                {
+                    return $pns_img_link;
+                }elseif($pns_img_link == 'dimension_err')
+                {
+                    return $pns_img_link;
+                }else{
+                    $myQuery = "UPDATE products_and_services SET 
+                    pns_img5 = '$pns_img_link'
+                    WHERE id = 1";
+        
+                    
+                    $result = mysqli_query($this->db, $myQuery);
+                    if(!$result){
+                    return "Error: " .mysqli_error($this->db);
+                    }else{
+                        $query = "UPDATE products_and_services SET 
+                        pns_heading5 = '$pns_heading5',
+                        pns_desc5 = '$pns_desc5'
+                        WHERE id = 1";
+                        
+                        $query_result = mysqli_query($this->db, $query);
+                        if(!$query_result){
+                        return "Error: " .mysqli_error($this->db);
+                        }else{
+                        return 'good';
+                        }
+                    }
+                }
+            }
+
+                
+
+            }
+      
+        }
+    }
+
+
+
     // LOGIN PAGE 
 
     public function loginPage($data)
     {
         if(is_object($data) || is_array($data))
         {
-            $password = md5($data['pass']);
+            $password = md5($data['password']);
             $email = filter_var($data['email'], FILTER_VALIDATE_EMAIL);
         }
-        $myQuery = "SELECT * FROM admin_cred WHERE pass = '$password' && email = '$email'";
+        $myQuery = "SELECT * FROM admin_cred WHERE pass = '$password' AND email = '$email'";
         $result = mysqli_query($this->db, $myQuery);
-        if(!$result){
-            echo 'not';
+        $row = mysqli_num_rows($result);
+        // return $row;
+        if($row == 1)
+        {
+            return 'good';
+        }elseif($row < 1)
+        {
+            return 'none';
         }
-        return $result;
     }
 
 

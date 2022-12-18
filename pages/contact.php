@@ -1,6 +1,12 @@
 <?php
 require_once('../ClassLibraries/MainClass.php');
 $mainPlug = new mainClass();
+
+
+if(!isset($_SESSION['login']) || empty($_SESSION['login']))
+    {
+            header("Location: ../login");
+    }
 ?>
 
 <!DOCTYPE html>
@@ -128,7 +134,7 @@ $mainPlug = new mainClass();
               <a class="dropdown-item preview-item">               
                   <i class="icon-head"></i> Profile
               </a> -->
-              <a class="dropdown-item preview-item" href="#">
+              <a class="dropdown-item preview-item" href="../login/logout.php">
                   <i class="icon-circle-cross"></i> Logout
               </a>
             </div>
@@ -172,6 +178,7 @@ $mainPlug = new mainClass();
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"> <a class="nav-link" href="../pages/homepage.php">Homepage</a></li>
                 <li class="nav-item"> <a class="nav-link" href="../pages/about.php">About Page</a></li>
+                <li class="nav-item"> <a class="nav-link" href="../pages/product_services.php">Products & Services</a></li>
                 <li class="nav-item"> <a class="nav-link" href="../pages/contact.php">Contact Page</a></li>
               </ul>
             </div>
@@ -224,7 +231,9 @@ $mainPlug = new mainClass();
                       <label for="formFile" class="form-label">Upload Contact Us Page Background</label>
                       <input class="form-control" type="file" id="formFile" name="contact_bg_image">
                       </div>
-                      <p style="color:red">Slide should be above 800 x 500 dimension</p>
+                      <p style="color:red">Image should be above 800 x 500 and below 1920 x 1080</p>
+                      <p style="color:red">Image size must be less than 1MB</p>
+                      <p style="color:red">Image extesion can be SVG, PNG, JPG or JPEG</p>
                     </div>
                     <button type="submit" class="btn btn-primary mr-2" name="contact_bg_submit">Submit</button>
                     <button class="btn btn-light">Cancel</button>

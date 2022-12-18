@@ -1,6 +1,14 @@
 <?php
 require_once('../ClassLibraries/MainClass.php');
 $mainPlug = new mainClass();
+
+
+
+
+if(!isset($_SESSION['login']) || empty($_SESSION['login']))
+    {
+            header("Location: ../login");
+    }
 ?>
 
 
@@ -40,12 +48,47 @@ $mainPlug = new mainClass();
   <!-- Bootstrap -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
+    <!-- WYSIWYG Editor  -->
+    <script src="../vendor/tinymce/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+  <script>
+    // tinymce.init({
+    //   selector: 'textarea#default-editor',
+    //   plugins: 'code'
+    // });
+
+    tinymce.init({
+      selector: 'textarea#default-editor',
+      plugins: 'advlist autolink lists link image charmap preview anchor pagebreak code visualchars wordcount',
+	  setup: function(editor) {
+	  	var max = 400;
+	    editor.on('submit', function(event) {
+		  var numChars = tinymce.activeEditor.plugins.wordcount.body.getCharacterCount();
+		  if (numChars > max) {
+            alert("Only a maximum " + max + " characters are allowed.");
+			event.preventDefault();
+			return false;
+		  }
+		});
+	  }
+   });
+  </script>
+
 
 
   <?php
-  if(isset($_POST['homepage_slider_upload']))
+    
+
+
+    
+
+
+    
+  if(isset($_POST['submit']))
   {
-    $uploadStatus = $mainPlug->uploadHomepageSliders($_POST);
+    $uploadStatus = $mainPlug->uploadHomePageDetails($_POST);
+    echo $uploadStatus;
+    die();
+
     if($uploadStatus == 'good')
     { 
         echo "     <script type='text/javascript'>   
@@ -96,12 +139,27 @@ $mainPlug = new mainClass();
   
     
   
-  }elseif(isset($_POST['homepage_section1']))
+  }
+  
+  
+  
+ if(isset($_POST['homepage_section1']))
   {
     $uploadStatus = $mainPlug->uploadHomepageSection1($_POST);
     // print_r($uploadStatus);
     // die();
-    if($uploadStatus == 'ext_err')
+    if($uploadStatus == 'good')
+    { 
+        echo "     <script type='text/javascript'>   
+        $(document).ready(function() {
+        toastr.options.positionClass = 'toast-top-center';
+        toastr.options.closeButton = true;
+        toastr.options.progressBar = true;
+        toastr.options.timeOut = 30000;
+        toastr.success('Homepage Updated', 'Success');
+    });
+    </script>";
+    }elseif($uploadStatus == 'ext_err')
     { 
         echo "     <script type='text/javascript'>   
         $(document).ready(function() {
@@ -140,7 +198,18 @@ $mainPlug = new mainClass();
     $uploadStatus = $mainPlug->uploadHomepageSection2($_POST);
     // print_r($uploadStatus);
     // die();
-    if($uploadStatus == 'ext_err')
+    if($uploadStatus == 'good')
+    { 
+        echo "     <script type='text/javascript'>   
+        $(document).ready(function() {
+        toastr.options.positionClass = 'toast-top-center';
+        toastr.options.closeButton = true;
+        toastr.options.progressBar = true;
+        toastr.options.timeOut = 30000;
+        toastr.success('Homepage Updated', 'Success');
+    });
+    </script>";
+    }elseif($uploadStatus == 'ext_err')
     { 
         echo "     <script type='text/javascript'>   
         $(document).ready(function() {
@@ -231,7 +300,7 @@ $mainPlug = new mainClass();
               <a class="dropdown-item preview-item">               
                   <i class="icon-head"></i> Profile
               </a> -->
-              <a class="dropdown-item preview-item" href="#">
+              <a class="dropdown-item preview-item" href="../login/logout.php">
                   <i class="icon-circle-cross"></i> Logout
               </a>
             </div>
@@ -275,6 +344,7 @@ $mainPlug = new mainClass();
               <ul class="nav flex-column sub-menu">
                 <li class="nav-item"> <a class="nav-link" href="../pages/homepage.php">Homepage</a></li>
                 <li class="nav-item"> <a class="nav-link" href="../pages/about.php">About Page</a></li>
+                <li class="nav-item"> <a class="nav-link" href="../pages/product_services.php">Products & Services</a></li>
                 <li class="nav-item"> <a class="nav-link" href="../pages/contact.php">Contact Page</a></li>
               </ul>
             </div>
@@ -295,7 +365,7 @@ $mainPlug = new mainClass();
       </nav>
       <!-- partial -->
       <?php
-      $homepage_result = $mainPlug->fetchHomepageDetails();
+      $homepage_result = $mainPlug->fetchHomeDetails();
       $homepage_data = mysqli_fetch_assoc($homepage_result);
       ?>
       <div class="main-panel">     
@@ -305,68 +375,47 @@ $mainPlug = new mainClass();
             <div class="col-md-6 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Homepage</h4>
+                  <h4 class="card-title">Header Section</h4>
                   <p class="card-description">
-                    Slide 1 and 2 & Description
+                    Header Details
                   </p>
 
                   <div class="row">
                   <div class="responsive">
                     <div class="gallery">
-                      <a target="_blank" href="<?php echo $homepage_data['home_slider1_image']; ?>">
-                        <img src="<?php echo $homepage_data['home_slider1_image']; ?>" alt="Cinque Terre" width="600" height="400">
+                      <a target="_blank" href="<?php echo $homepage_data['header_image']; ?>">
+                        <img src="<?php echo $homepage_data['header_image']; ?>" alt="Cinque Terre" width="600" height="400">
                       </a>
-                      <div class="desc">Homepage Slide 1</div>
-                    </div>
-                  </div>
-                  
-                  
-                  <div class="responsive">
-                    <div class="gallery">
-                      <a target="_blank" href="<?php echo $homepage_data['home_slider2_image']; ?>">
-                        <img src="<?php echo $homepage_data['home_slider2_image']; ?>" alt="Forest" width="600" height="400">
-                      </a>
-                      <div class="desc">Homepage Slide 2</div>
+                      <div class="desc">Header Image</div>
                     </div>
                   </div>
                 </div>
                   <form class="forms-sample" method="POST" action="" enctype="multipart/form-data">
                     <div class="form-group">
                       <div class="mb-3">
-                      <label for="formFile" class="form-label">Slide 1 Image</label>
-                      <input class="form-control" type="file" id="formFile" name="slide-1">
+                      <label for="formFile" class="form-label">Header Image</label>
+                      <input class="form-control" type="file" id="formFile" name="header_image">
                       </div>
-                      <p style="color:red">Slide should be above 800 x 500 dimension</p>
+                      <p style="color:red">Image should be above 800 x 500  and below 1920 x 1080</p>
+                      <p style="color:red">Image size must be less than 1MB</p>
+                      <p style="color:red">Image extesion can be SVG, PNG, JPG or JPEG</p>
                     </div>
 
                     <div class="form-group">
-                      <label for="exampleInputEmail1">Slider 1 Heading</label>
-                      <input type="text" class="form-control" id="exampleInputEmail1" name="slider1_heading" value="<?php echo $homepage_data['home_slider1_heading']; ?>" required>
+                      <label for="exampleInputEmail1">Heading</label>
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="header_title" value="<?php echo $homepage_data['header_title']; ?>" required maxlength="40">
                     </div>
                     <div class="form-group">
-                      <label for="exampleTextarea1">Slider 1 Description</label>
-                      <textarea class="form-control" id="exampleTextarea1" rows="4" name="slider1_desc" required><?php echo $homepage_data['home_slider1_desc']; ?></textarea>
-                    </div>
-
-
-                    <div class="form-group">
-                      <div class="mb-3">
-                      <label for="formFile" class="form-label">Slide 2 Image</label>
-                      <input class="form-control" type="file" id="formFile" name="slide-2">
-                      </div>
-                      <p style="color:red">Slide should be above 800 x 500 dimension</p>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="exampleInputEmail1">Slider 2 Heading</label>
-                      <input type="text" class="form-control" id="exampleInputEmail1" name="slider2_heading" value="<?php echo $homepage_data['home_slider2_heading']; ?>" required>
+                      <label for="exampleTextarea1">Description</label>
+                      <textarea class="form-control" id="default-editor" rows="4" name="header_desc" required maxlength="400" ><?php echo $homepage_data['header_desc']; ?></textarea>
+                      <p style="color:red">Max number of characters: 400</p>
                     </div>
                     <div class="form-group">
-                      <label for="exampleTextarea1">Slider 2 Description</label>
-                      <textarea class="form-control" id="exampleTextarea1" rows="4" name="slider2_desc" required><?php echo $homepage_data['home_slider2_desc']; ?></textarea>
+                      <label for="exampleInputEmail1">CTA Button</label>
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="header_btn" value="<?php echo $homepage_data['header_btn']; ?>" required maxlength="40">
                     </div>
 
-                    <button type="submit" class="btn btn-primary mr-2" name="homepage_slider_upload">Submit</button>
+                    <button type="submit" class="btn btn-primary mr-2" name="submit" value="header_upload">Submit</button>
                     <button class="btn btn-light">Cancel</button>
                   </form>
                 </div>
@@ -381,38 +430,108 @@ $mainPlug = new mainClass();
             <div class="col-md-6 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Homepage</h4>
+                  <h4 class="card-title">Dosh Finance Section</h4>
                   <p class="card-description">
-                    Image 1 & Description 1
+                  Dosh Finance Details
                   </p>
 
                   <div class="row">
                   <div class="responsive">
                     <div class="gallery">
-                      <a target="_blank" href="<?php echo $homepage_data['home_image1']; ?>">
-                        <img src="<?php echo $homepage_data['home_image1']; ?>" alt="Cinque Terre" width="600" height="400">
+                      <a target="_blank" href="<?php echo $homepage_data['finance_image']; ?>">
+                        <img src="<?php echo $homepage_data['finance_image']; ?>" alt="Cinque Terre" width="600" height="400">
                       </a>
-                      <div class="desc">Homepage Image 1</div>
+                      <div class="desc">Dosh Finance Image</div>
                     </div>
                   </div>
                 </div>
                   <form class="forms-sample" method="POST" action="" enctype="multipart/form-data">
                     <div class="form-group">
                       <div class="mb-3">
-                      <label for="formFile" class="form-label">Upload Image 1</label>
+                      <label for="formFile" class="form-label">Upload Image</label>
+                      <input class="form-control" type="file" id="formFile" name="finance_image">
+                      </div>
+                      <p style="color:red">Image should be above 800 x 500  and below 1920 x 1080</p>
+                      <p style="color:red">Image size must be less than 1MB</p>
+                      <p style="color:red">Image extesion can be SVG, PNG, JPG or JPEG</p>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">Heading</label>
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="finance_title" value="<?php echo $homepage_data['finance_title']; ?>" required maxlength="16">
+                      <p style="color:red">Max number of characters: 16</p>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleTextarea1">Description</label>
+                      <textarea class="form-control" id="default-editor" rows="4" name="finance_desc" required maxlength="255"><?php echo $homepage_data['finance_desc']; ?></textarea>
+                      <p style="color:red">Max number of characters: 255</p>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">CTA Button</label>
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="finance_btn" value="<?php echo $homepage_data['finance_btn']; ?>" required maxlength="16">
+                      <p style="color:red">Max number of characters: 16</p>
+                    </div>
+                    <button type="submit" class="btn btn-primary mr-2" name="submit" value="finance_upload">Submit</button>
+                    <button class="btn btn-light">Cancel</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+            <!-- INSURANCE  -->
+
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Dosh Insurance Section</h4>
+                  <p class="card-description">
+                  Dosh Insurance Details
+                  </p>
+
+                  <div class="row">
+                  <div class="responsive">
+                    <div class="gallery">
+                      <a target="_blank" href="<?php echo $homepage_data['insurance_image']; ?>">
+                        <img src="<?php echo $homepage_data['insurance_image']; ?>" alt="Cinque Terre" width="600" height="400">
+                      </a>
+                      <div class="desc">Dosh Insurance Image</div>
+                    </div>
+                  </div>
+                </div>
+                  <form class="forms-sample" method="POST" action="" enctype="multipart/form-data">
+                    <div class="form-group">
+                      <div class="mb-3">
+                      <label for="formFile" class="form-label">Upload Image</label>
                       <input class="form-control" type="file" id="formFile" name="home-image1">
                       </div>
-                      <p style="color:red">Slide should be above 800 x 500 dimension</p>
+                      <p style="color:red">Image should be above 800 x 500  and below 1920 x 1080</p>
+                      <p style="color:red">Image size must be less than 1MB</p>
+                      <p style="color:red">Image extesion can be SVG, PNG, JPG or JPEG</p>
                     </div>
                     <div class="form-group">
-                      <label for="exampleInputEmail1">Heading 1</label>
-                      <input type="text" class="form-control" id="exampleInputEmail1" name="home_image1_heading" value="<?php echo $homepage_data['home_image1_heading']; ?>" required>
+                      <label for="exampleInputEmail1">Heading</label>
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="home_image1_heading" value="<?php echo $homepage_data['insurance_title']; ?>" required maxlength="16">
+                      <p style="color:red">Max number of characters: 16</p>
                     </div>
                     <div class="form-group">
                       <label for="exampleTextarea1">Description</label>
-                      <textarea class="form-control" id="exampleTextarea1" rows="4" name="home_image1_desc" required><?php echo $homepage_data['home_image1_desc']; ?></textarea>
+                      <textarea class="form-control" id="default-editor" rows="4" name="home_image1_desc" required maxlength="255"><?php echo $homepage_data['insurance_desc']; ?></textarea>
+                      <p style="color:red">Max number of characters: 255</p>
                     </div>
-                    <button type="submit" class="btn btn-primary mr-2" name="homepage_section1">Submit</button>
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">CTA Button</label>
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="home_image1_heading" value="<?php echo $homepage_data['insurance_btn']; ?>" required maxlength="16">
+                      <p style="color:red">Max number of characters: 16</p>
+                    </div>
+                    <button type="submit" class="btn btn-primary mr-2" name="insurance_upload">Submit</button>
                     <button class="btn btn-light">Cancel</button>
                   </form>
                 </div>
@@ -420,6 +539,13 @@ $mainPlug = new mainClass();
             </div>
 
 
+
+
+
+
+
+
+            <!-- PAY  -->
 
 
 
@@ -427,43 +553,261 @@ $mainPlug = new mainClass();
             <div class="col-md-6 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Homepage</h4>
+                  <h4 class="card-title">Dosh Pay Section</h4>
                   <p class="card-description">
-                    Image 2 & Description 2
+                  Dosh Pay Details
                   </p>
 
                   <div class="row">
                   <div class="responsive">
                     <div class="gallery">
-                      <a target="_blank" href="<?php echo $homepage_data['home_image2']; ?>">
-                        <img src="<?php echo $homepage_data['home_image2']; ?>" alt="Cinque Terre" width="600" height="400">
+                      <a target="_blank" href="<?php echo $homepage_data['pay_image']; ?>">
+                        <img src="<?php echo $homepage_data['pay_image']; ?>" alt="Cinque Terre" width="600" height="400">
                       </a>
-                      <div class="desc">Homepage Image 2</div>
+                      <div class="desc">Dosh Pay Image</div>
                     </div>
                   </div>
                 </div>
                   <form class="forms-sample" method="POST" action="" enctype="multipart/form-data">
                     <div class="form-group">
-                    <div class="mb-3">
-                      <label for="formFile" class="form-label">Upload Image 1</label>
-                      <input class="form-control" type="file" id="formFile" name="home-image2">
+                      <div class="mb-3">
+                      <label for="formFile" class="form-label">Upload Image</label>
+                      <input class="form-control" type="file" id="formFile" name="home-image1">
                       </div>
-                      <p style="color:red">Slide should be 1602 x 1174 dimension</p>
+                      <p style="color:red">Image should be above 800 x 500  and below 1920 x 1080</p>
+                      <p style="color:red">Image size must be less than 1MB</p>
+                      <p style="color:red">Image extesion can be SVG, PNG, JPG or JPEG</p>
                     </div>
                     <div class="form-group">
-                      <label for="exampleInputEmail1">Heading 2</label>
-                      <input type="text" class="form-control" id="exampleInputEmail1" name="home_image2_heading" value="<?php echo $homepage_data['home_image2_heading']; ?>" required>
+                      <label for="exampleInputEmail1">Heading</label>
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="home_image1_heading" value="<?php echo $homepage_data['pay_title']; ?>" required maxlength="16">
+                      <p style="color:red">Max number of characters: 16</p>
                     </div>
                     <div class="form-group">
                       <label for="exampleTextarea1">Description</label>
-                      <textarea class="form-control" id="exampleTextarea1" rows="4" name="home_image2_desc" required><?php echo $homepage_data['home_image2_desc']; ?></textarea>
+                      <textarea class="form-control" id="default-editor" rows="4" name="home_image1_desc" required maxlength="255"><?php echo $homepage_data['pay_desc']; ?></textarea>
+                      <p style="color:red">Max number of characters: 255</p>
                     </div>
-                    <button type="submit" class="btn btn-primary mr-2" name="homepage_section2">Submit</button>
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">CTA Button</label>
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="home_image1_heading" value="<?php echo $homepage_data['pay_btn']; ?>" required maxlength="16">
+                      <p style="color:red">Max number of characters: 16</p>
+                    </div>
+                    <button type="submit" class="btn btn-primary mr-2" name="pay_upload">Submit</button>
                     <button class="btn btn-light">Cancel</button>
                   </form>
                 </div>
               </div>
             </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- RIDE  -->
+
+
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Dosh Ride Section</h4>
+                  <p class="card-description">
+                  Dosh Ride Details
+                  </p>
+
+                  <div class="row">
+                  <div class="responsive">
+                    <div class="gallery">
+                      <a target="_blank" href="<?php echo $homepage_data['ride_image']; ?>">
+                        <img src="<?php echo $homepage_data['ride_image']; ?>" alt="Cinque Terre" width="600" height="400">
+                      </a>
+                      <div class="desc">Dosh Ride Image</div>
+                    </div>
+                  </div>
+                </div>
+                  <form class="forms-sample" method="POST" action="" enctype="multipart/form-data">
+                    <div class="form-group">
+                      <div class="mb-3">
+                      <label for="formFile" class="form-label">Upload Image</label>
+                      <input class="form-control" type="file" id="formFile" name="home-image1">
+                      </div>
+                      <p style="color:red">Image should be above 800 x 500  and below 1920 x 1080</p>
+                      <p style="color:red">Image size must be less than 1MB</p>
+                      <p style="color:red">Image extesion can be SVG, PNG, JPG or JPEG</p>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">Heading</label>
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="home_image1_heading" value="<?php echo $homepage_data['ride_title']; ?>" required maxlength="16">
+                      <p style="color:red">Max number of characters: 16</p>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleTextarea1">Description</label>
+                      <textarea class="form-control" id="default-editor" rows="4" name="home_image1_desc" required maxlength="255"><?php echo $homepage_data['ride_desc']; ?></textarea>
+                      <p style="color:red">Max number of characters: 255</p>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">CTA Button</label>
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="home_image1_heading" value="<?php echo $homepage_data['ride_btn']; ?>" required maxlength="16">
+                      <p style="color:red">Max number of characters: 16</p>
+                    </div>
+                    <button type="submit" class="btn btn-primary mr-2" name="ride_upload">Submit</button>
+                    <button class="btn btn-light">Cancel</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- ERP  -->
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Dosh ERP Section</h4>
+                  <p class="card-description">
+                  Dosh ERP Details
+                  </p>
+
+                  <div class="row">
+                  <div class="responsive">
+                    <div class="gallery">
+                      <a target="_blank" href="<?php echo $homepage_data['erp_image']; ?>">
+                        <img src="<?php echo $homepage_data['erp_image']; ?>" alt="Cinque Terre" width="600" height="400">
+                      </a>
+                      <div class="desc">Dosh ERP Image</div>
+                    </div>
+                  </div>
+                </div>
+                  <form class="forms-sample" method="POST" action="" enctype="multipart/form-data">
+                    <div class="form-group">
+                      <div class="mb-3">
+                      <label for="formFile" class="form-label">Upload Image</label>
+                      <input class="form-control" type="file" id="formFile" name="home-image1">
+                      </div>
+                      <p style="color:red">Image should be above 800 x 500  and below 1920 x 1080</p>
+                      <p style="color:red">Image size must be less than 1MB</p>
+                      <p style="color:red">Image extesion can be SVG, PNG, JPG or JPEG</p>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">Heading</label>
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="home_image1_heading" value="<?php echo $homepage_data['erp_title']; ?>" required maxlength="16">
+                      <p style="color:red">Max number of characters: 16</p>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleTextarea1">Description</label>
+                      <textarea class="form-control" id="default-editor" rows="4" name="home_image1_desc" required maxlength="255"><?php echo $homepage_data['erp_desc']; ?></textarea>
+                      <p style="color:red">Max number of characters: 255</p>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">CTA Button</label>
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="home_image1_heading" value="<?php echo $homepage_data['erp_btn']; ?>" required maxlength="16">
+                      <p style="color:red">Max number of characters: 16</p>
+                    </div>
+                    <button type="submit" class="btn btn-primary mr-2" name="erp_upload">Submit</button>
+                    <button class="btn btn-light">Cancel</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- E-Commerce  -->
+
+            <div class="col-md-6 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Dosh E-Commerce Section</h4>
+                  <p class="card-description">
+                  Dosh E-Commerce Details
+                  </p>
+
+                  <div class="row">
+                  <div class="responsive">
+                    <div class="gallery">
+                      <a target="_blank" href="<?php echo $homepage_data['ecom_image']; ?>">
+                        <img src="<?php echo $homepage_data['ecom_image']; ?>" alt="Cinque Terre" width="600" height="400">
+                      </a>
+                      <div class="desc">Dosh E-Commerce Image</div>
+                    </div>
+                  </div>
+                </div>
+                  <form class="forms-sample" method="POST" action="" enctype="multipart/form-data">
+                    <div class="form-group">
+                      <div class="mb-3">
+                      <label for="formFile" class="form-label">Upload Image</label>
+                      <input class="form-control" type="file" id="formFile" name="home-image1">
+                      </div>
+                      <p style="color:red">Image should be above 800 x 500  and below 1920 x 1080</p>
+                      <p style="color:red">Image size must be less than 1MB</p>
+                      <p style="color:red">Image extesion can be SVG, PNG, JPG or JPEG</p>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">Heading</label>
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="home_image1_heading" value="<?php echo $homepage_data['ecom_title']; ?>" required maxlength="16">
+                      <p style="color:red">Max number of characters: 16</p>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleTextarea1">Description</label>
+                      <textarea class="form-control" id="default-editor" rows="4" name="home_image1_desc" required maxlength="255"><?php echo $homepage_data['ecom_desc']; ?></textarea>
+                      <p style="color:red">Max number of characters: 255</p>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">CTA Button</label>
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="home_image1_heading" value="<?php echo $homepage_data['ecom_btn']; ?>" required maxlength="16">
+                      <p style="color:red">Max number of characters: 16</p>
+                    </div>
+                    <button type="submit" class="btn btn-primary mr-2" name="ecom_upload">Submit</button>
+                    <button class="btn btn-light">Cancel</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+
+
 
 
 
@@ -480,11 +824,13 @@ $mainPlug = new mainClass();
                   <form class="forms-sample" method="POST" action="" enctype="multipart/form-data">
                     <div class="form-group">
                       <label for="exampleInputEmail1">Sign Up Heading</label>
-                      <input type="text" class="form-control" id="exampleInputEmail1" name="home_signup_heading" value="<?php echo $homepage_data['home_signup_heading']; ?>" required>
+                      <input type="text" class="form-control" id="exampleInputEmail1" name="home_signup_heading" value="<?php echo $homepage_data['signup_title']; ?>" required maxlength="100">
+                      <p style="color:red">Max number of characters: 25</p>
                     </div>
                     <div class="form-group">
                       <label for="exampleTextarea1">Sign Up Description</label>
-                      <textarea class="form-control" id="exampleTextarea1" rows="4" name="home_signup_desc" required><?php echo $homepage_data['home_signup_desc']; ?></textarea>
+                      <textarea class="form-control" id="default-editor" rows="4" name="home_signup_desc" required maxlength="1000"><?php echo $homepage_data['signup_desc']; ?></textarea>
+                      <p style="color:red">Max number of characters: 255</p>
                     </div>
                     <button type="submit" class="btn btn-primary mr-2" name="homepage_section3">Submit</button>
                     <button class="btn btn-light">Cancel</button>
